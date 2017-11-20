@@ -18,7 +18,11 @@ Plugin.create(:mastodon) do
 #    boolean("Mastodonに投稿する", :mastodon_post)
 #    input(_("URL"), account[:host])
 #    input(_("とーくん"), account[:token])
+<<<<<<< HEAD
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
+=======
+    select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" })
+>>>>>>> f5d57a1deb796a7a16ccd24e221f3a36fd3f25ec
   end
 
   account = {
