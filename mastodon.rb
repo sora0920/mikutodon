@@ -5,6 +5,7 @@ require_relative './model/item'
 
 
 Plugin.create(:mastodon) do
+  random = Random.new
   i = 0
   cw  = ""
   info_toot = []
@@ -12,12 +13,12 @@ Plugin.create(:mastodon) do
 
   tl = "home"
   settings "Mastodon" do
-    UserConfig[:host] ||= :host
-    UserConfig[:token] ||= :token
-    boolean("Mastodonに投稿する", :mastodon_post)
-    input(_("URL"), account[:host])
-    input(_("とーくん"), account[:token])
-    select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" })
+#    UserConfig[:host] ||= :host
+#    UserConfig[:token] ||= :token
+#    boolean("Mastodonに投稿する", :mastodon_post)
+#    input(_("URL"), account[:host])
+#    input(_("とーくん"), account[:token])
+    select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
   end
 
   account = {
@@ -44,6 +45,19 @@ Plugin.create(:mastodon) do
           vis = "private"
         when 3 then
           vis = "direct"
+        when 4 then
+          case random.rand(1..400)
+          when 1..100 then
+            vis = "public"
+          when 101..200 then
+            vis = "unlisted"
+          when 201..300  then
+            vis = "private"
+          when 301..400 then
+            vis = "direct"
+          else
+            activity :system, "0から3までの乱数が0から3以外の数値を出したよ！\nすごいね！どう考えてもバグだね！"
+          end
         else
           vis = "public"
         end
@@ -54,6 +68,7 @@ Plugin.create(:mastodon) do
 
       Thread.new{  
         JSON.parse(res.body)
+     
         activity :system,  "test"
       }.next{|toot|
         result = toot
