@@ -12,11 +12,11 @@ Plugin.create(:mastodon) do
 
   tl = "home"
   settings "Mastodon" do
-    UserConfig[:host] ||= :host
-    UserConfig[:token] ||= :token
-    boolean("Mastodonに投稿する", :mastodon_post)
-    input(_("URL"), account[:host])
-    input(_("とーくん"), account[:token])
+#    UserConfig[:host] ||= :host
+#    UserConfig[:token] ||= :token
+#    boolean("Mastodonに投稿する", :mastodon_post)
+#    input(_("URL"), account[:host])
+#    input(_("とーくん"), account[:token])
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" })
   end
 
