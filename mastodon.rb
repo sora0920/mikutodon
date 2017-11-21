@@ -5,14 +5,15 @@ require_relative './model/item'
 
 
 Plugin.create(:mastodon) do
+#  ランダム公開範囲用の乱数
   random = Random.new
-  i = 0
-  cw  = ""
-  info_toot = []
 
+  cw  = ""
 
   tl = "home"
+  
   settings "Mastodon" do
+#    実装予定の設定ですがこの状態だと設定を開くとクラッシュするのでコメントアウト    
 #    UserConfig[:host] ||= :host
 #    UserConfig[:token] ||= :token
 #    boolean("Mastodonに投稿する", :mastodon_post)
@@ -21,17 +22,22 @@ Plugin.create(:mastodon) do
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
   end
 
+# アカウントの配列
   account = {
     :token => "",
     :host => ""
   }
+  
   account[:status_url] = "https://" + account[:host] + "/api/v1/statuses"
+  
+# タイムアウトを作る
   tab :mastodon_home, 'HomeTimeline' do
     set_icon "https://#{account[:host]}/favicon.ico"
     timeline :mastodon_home
   end  
   
 
+# 投稿欄を乗っ取る
   filter_gui_postbox_post do |gui_postbox, opt|
     if UserConfig[:mastodon_post]
       text = Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text
@@ -61,11 +67,10 @@ Plugin.create(:mastodon) do
         else
           vis = "public"
         end
-
-
-      
+# 投稿する    
       PostToot(text, vis, cw, account)
-
+            
+# 自分のTootをタイムアウトに追加する(試してるだけのコード)
       Thread.new{  
         JSON.parse(res.body)
      
