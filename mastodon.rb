@@ -5,6 +5,7 @@ require_relative './model/item'
 
 
 Plugin.create(:mastodon) do
+#  ランダム公開範囲用の乱数
   random = Random.new
 
   vis = "public"
