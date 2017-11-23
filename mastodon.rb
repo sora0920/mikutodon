@@ -5,11 +5,11 @@ require_relative './model/item'
 
 
 Plugin.create(:mastodon) do
-#  ランダム公開範囲用の乱数
+  # ランダム公開範囲用の乱数
   random = Random.new
-
-  vis = "public"
   cw  = ""
+  vis = "public"
+
 
   tl = "home"
 
@@ -18,18 +18,16 @@ Plugin.create(:mastodon) do
 #    UserConfig[:host] ||= :host
 #    UserConfig[:token] ||= :token
 #    boolean("Mastodonに投稿する", :mastodon_post)
-#    input(_("URL"), account[:host])
-#    input(_("とーくん"), account[:token])
+    input(_("URL"), :account_host)
+    input(_("とーくん"), :account_token)
     input(_("CW使用時の警告文"), :cw_text)
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
   end
 
-  # アカウントの配列
   account = {
-    :token => "",
-    :host => ""
+    :token => UserConfig[:account_token],
+    :host => UserConfig[:account_host]
   }
-  account[:status_url] = "https://" + account[:host] + "/api/v1/statuses"
 
   # タイムラインを作る
   tab :mastodon_home, 'HomeTimeline' do
@@ -57,15 +55,18 @@ Plugin.create(:mastodon) do
   end
 
 
+
   # 投稿欄を乗っ取る
   filter_gui_postbox_post do |gui_postbox, opt|
     text = Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text
+
     # 投稿する
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
+
     # 投稿欄を空に
     Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text = ""
 
-#     試してるコードをコメントアウト
+#    試してるコードをコメントアウト
 #    Thread.new{  
 #      JSON.parse(res.body)
 #   
@@ -91,6 +92,7 @@ Plugin.create(:mastodon) do
 #      activity :system,  "test"
 #      timeline(:mastodon_home) << item
 #    }
+
   end
 
   on_boot do |service|

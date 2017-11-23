@@ -3,7 +3,6 @@ require 'uri'
 require 'json'
 
 def post_toot(text, cw, account, config)  
-  activity :system, "test"
 
 
   vis = 
@@ -37,7 +36,7 @@ def post_toot(text, cw, account, config)
 
   
   
-  uri = URI.parse(account[:status_url])
+  uri = URI.parse("https://#{account[:host]}/api/v1/statuses")
   https = Net::HTTP.new(uri.host, uri.port)
   https.use_ssl = true
 
