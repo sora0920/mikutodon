@@ -57,7 +57,7 @@ def post_toot(text, cw, account, config)
 
   res = https.request(req)
 
-
+  $toot_result = res.body
   activity :system,  "#{res.code}\n#{res.message}"
   
 end

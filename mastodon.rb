@@ -1,11 +1,15 @@
 # -*- coding: utf-8 -*-
 require "thread"
+require "json"
+require 'websocket-client-simple'
+require 'nokogiri'
 require_relative './toot'
+require_relative "./stream"
 require_relative './model.rb'
 
 
 Plugin.create(:mastodon) do
-# ランダム公開範囲用乱数
+  # ランダム公開範囲用乱数
   random = Random.new
   cw  = ""
   vis = "public"
@@ -18,7 +22,7 @@ Plugin.create(:mastodon) do
   tl = "home"
 
   settings "Mastodon" do
-#    実装予定の設定ですがこの状態だと設定を開くとクラッシュするのでコメントアウト
+    # エラー対策
 #    UserConfig[:host] ||= :host
 #    UserConfig[:token] ||= :token
 #    boolean("Mastodonに投稿する", :mastodon_post)
@@ -28,41 +32,98 @@ Plugin.create(:mastodon) do
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
   end
 
-# アカウントの配列
+  # アカウント
   account = {
     :token => UserConfig[:account_token],
     :host => UserConfig[:account_host]
   }
 
-# タイムラインを作る
+  # Mastodon用タイムラインの生成
   tab :mastodon_home, 'HomeTimeline' do
     set_icon "https://#{account[:host]}/favicon.ico"
     timeline :mastodon_home
   end  
-  
+ 
+  tab :mastodon_local, "LocalTimeline" do
+    set_icon "https://#{account[:host]}/favicon.ico"
+    timeline :mastodon_local
+  end
 
-# CWで投稿するコマンド
+  tab :mastodon_public, "PublicTimeline" do
+    set_icon "https://#{account[:host]}/favicon.ico"
+    timeline :mastodon_public
+  end
+
+  
+  # タイムラインのストリームをスタート
+  def timeline_start(account)
+    Thread.new{
+      toots_home = []
+      stream(account, "user", :mastodon_home, toots_home)
+    }
+    Thread.new{
+      toots_local = []
+      stream(account, "public:local", :mastodon_local, toots_local)
+    }
+    Thread.new{
+      toots_public = []
+      stream(account, "public", :mastodon_public, toots_public)
+    }
+
+  end
+
+
+  # 表示条件を満たすデータに加工
+  def create_toot(status)
+    data = JSON.parse(status)
+    
+    # HTMLのParse
+    toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").search('p').text
+
+        
+    user = MstdnUser.new_ifnecessary(
+      name: data["account"] ["display_name"],
+      link: data["account"] ["url"],
+      created: Time.parse(data["account"] ["created_at"]),
+      profile_image_url: data["account"] ["avatar"],
+      id: data["account"]["id"].to_i
+    )
+    
+    toot = MstdnToot.new_ifnecessary(
+      id: data["id"].to_i,
+      link: data["url"],
+      description: toot_body,
+      created: Time.parse(data["created_at"]),
+      user: user
+    )
+    
+    return toot
+  end
+
+  # CWで投稿するコマンドを追加
   command(:mastodon_cw,
           name: "CWで投稿",
           condition: lambda{ |opt| true },
           visible: true,
           role: :postbox) do |opt|
     cw_text = UserConfig[:cw_text]
-  # もしコンフィグ上のCWテキストが空だった場合には警告文を追加する
+
+    # もしCWの文章が指定されていなかった場合は自動で閲覧注意を挿入
     if cw_text.empty?
       cw_text = "閲覧注意！"
     end
-   #投稿欄から文字列を取得しToot 
+
     text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text 
     post_toot(text, cw_text, account, UserConfig[:mastodon_vis])    
-    # 投稿欄を空に
+
     Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
 
-# 投稿欄を乗っ取る
+  # 投稿欄を乗っ取りMastodonに投稿
   filter_gui_postbox_post do |gui_postbox, opt|
     text = Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text
-  # もし投稿内容が正規表現なら警告する機能(未実装)    
+    
+    # もし投稿内容が正規表現なら警告する機能(未実装)
     if text =~ /^s\/.+\/.+\/?$/
 #      req_warn = Gtk::Dialog.new
 #
@@ -88,44 +149,23 @@ Plugin.create(:mastodon) do
 #    else
       activity :system, "正規表現だよ！"
     end
-#   投稿する
+
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
+
+    toots = []
+    toots.push(create_toot($toot_result))
+    timeline(:mastodon_home) << toots
+    
 #    end
-    # 投稿欄を空に
+
     Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text = ""
   end
-
-# タイムラインにTootを追加するテスト(タイムラインに固定の内容の投稿を追加することには成功してます)
-  def test_1 
-#    activity :system, "!" 
-    user = MstdnUser.new_ifnecessary(
-      name: "TestUser",
-      link: "https://mstdn.maud.io/@Non",
-      created: Time.at(0),
-      profile_image_url: "https://mstdn.maud.io/favicon.ico",
-      id: 1
-    )
-#    activity :system, "user!"
-    toot = MstdnToot.new_ifnecessary(
-      id: 1,
-      link: "https://mstdn.maud.io/favicon.ico",
-      description: "てすと！",
-      created: Time.at(0),
-      user: user
-    )
-#    activity :system, "toot!"
     
-    return toot
-  end
-# タイムラインにTootを追加
-  on_period { |service|
-    toots = []
-    toots.push(test_1)
-    toots.push(test_1)
-    timeline(:mastodon_home) << toots
-  }
-
+  # タイムラインの開始を開始
   on_boot do |service|
+    timeline_start(account)
   end
+
+
 end
 
