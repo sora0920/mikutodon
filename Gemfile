@@ -1,2 +1,3 @@
-gem "websocket-client-simple"
+gem "eventmachine"
+gem "faye-websocket"
 gem "nokogiri"

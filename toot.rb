@@ -3,8 +3,6 @@ require 'uri'
 require 'json'
 
 def post_toot(text, cw, account, config)  
-
-
   vis = 
     case config
       when 0 then
@@ -31,10 +29,6 @@ def post_toot(text, cw, account, config)
       else
         vis = "public"
       end
-  
-  
-
-  
   
   uri = URI.parse("https://#{account[:host]}/api/v1/statuses")
   https = Net::HTTP.new(uri.host, uri.port)

@@ -1,19 +1,21 @@
 # -*- coding: utf-8 -*-
 require "thread"
 require "json"
-require 'websocket-client-simple'
+require "eventmachine"
+require "faye/websocket"
 require 'nokogiri'
 require_relative './toot'
 require_relative "./stream"
 require_relative './model.rb'
 
 
-Plugin.create(:mastodon) do
+Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
   random = Random.new
   cw  = ""
   vis = "public"
 
+  tf = false
 
   filter_extract_datasources do |ds|
     [ds.merge(mastodon: 'Mastodon')]
@@ -21,8 +23,8 @@ Plugin.create(:mastodon) do
 
   tl = "home"
 
-  settings "Mastodon" do
-    # エラー対策
+  settings "mikutodon" do
+     # エラー対策
 #    UserConfig[:host] ||= :host
 #    UserConfig[:token] ||= :token
 #    boolean("Mastodonに投稿する", :mastodon_post)
@@ -37,6 +39,7 @@ Plugin.create(:mastodon) do
     :token => UserConfig[:account_token],
     :host => UserConfig[:account_host]
   }
+
 
   # Mastodon用タイムラインの生成
   tab :mastodon_home, 'HomeTimeline' do
@@ -72,11 +75,10 @@ Plugin.create(:mastodon) do
 
   end
 
-
   # 表示条件を満たすデータに加工
   def create_toot(status)
     data = JSON.parse(status)
-    
+ 
     # HTMLのParse
     toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").search('p').text
 
@@ -119,10 +121,11 @@ Plugin.create(:mastodon) do
     Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
 
+
   # 投稿欄を乗っ取りMastodonに投稿
   filter_gui_postbox_post do |gui_postbox, opt|
     text = Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text
-    
+
     # もし投稿内容が正規表現なら警告する機能(未実装)
     if text =~ /^s\/.+\/.+\/?$/
 #      req_warn = Gtk::Dialog.new
@@ -152,9 +155,6 @@ Plugin.create(:mastodon) do
 
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
 
-    toots = []
-    toots.push(create_toot($toot_result))
-    timeline(:mastodon_home) << toots
     
 #    end
 
