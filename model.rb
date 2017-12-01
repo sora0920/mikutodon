@@ -19,5 +19,7 @@ class MstdnToot < Retriever::Model
   field.string :description
   field.time   :created
   field.has    :user, MstdnUser, required: true
+  
+  entity_class Retriever::Entity::URLEntity  
 end
 
