@@ -8,20 +8,17 @@ require_relative './toot'
 require_relative "./stream"
 require_relative './model.rb'
 
-
 Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
   random = Random.new
   cw  = ""
   vis = "public"
 
-  tf = false
 
   filter_extract_datasources do |ds|
     [ds.merge(mastodon: 'Mastodon')]
   end
 
-  tl = "home"
 
   settings "mikutodon" do
      # エラー対策
@@ -77,16 +74,32 @@ Plugin.create(:mikutodon) do
 
   # 表示条件を満たすデータに加工
   def create_toot(status)
-    data = JSON.parse(status)
- 
-    # HTMLのParse
-    toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").search('p').text
+    status_parse = JSON.parse(status)
 
-        
+    created_time = status_parse["created_at"]
+
+    data = if status_parse["reblog"].empty?
+      status_parse
+    else 
+      status_parse["reblog"]
+    end
+ 
+
+    # HTMLのParse
+    toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").text
+
+    
+    user_name = if data["account"] ["display_name"].empty?
+      data["account"] ["username"]
+    else
+      data["account"] ["display_name"]
+    end
+
+  
     user = MstdnUser.new_ifnecessary(
-      name: data["account"] ["display_name"],
+      name: user_name,
       link: data["account"] ["url"],
-      created: Time.parse(data["account"] ["created_at"]),
+      created: Time.parse(data["account"] ["created_at"]).localtime,
       profile_image_url: data["account"] ["avatar"],
       id: data["account"]["id"].to_i
     )
@@ -95,12 +108,13 @@ Plugin.create(:mikutodon) do
       id: data["id"].to_i,
       link: data["url"],
       description: toot_body,
-      created: Time.parse(data["created_at"]),
+      created: Time.parse(created_time).localtime,
       user: user
     )
     
     return toot
   end
+
 
   # CWで投稿するコマンドを追加
   command(:mastodon_cw,
