@@ -6,13 +6,11 @@ require "json"
 require "eventmachine"
 require "faye/websocket"
 require 'nokogiri'
-require_relative "./toot_test"
-require_relative './fav'
 require_relative './toot'
 require_relative './model.rb'
 require_relative "./stream"
 require_relative "./create_toot"
-require_relative "./reblog"
+require_relative "./toot_operation"
 
 Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
