@@ -1,7 +1,3 @@
-require 'net/http'
-require 'uri'
-require 'json'
-
 def post_toot(text, cw, account, config)  
   vis = 
     case config

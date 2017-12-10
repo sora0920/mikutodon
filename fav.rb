@@ -1,8 +1,3 @@
-require 'net/http'
-require 'uri'
-require 'json'
-require_relative "./toot_test"
-
 def mstdn_fav(id, account) 
   toot = toot_test(id, account)
 

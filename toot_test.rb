@@ -1,7 +1,3 @@
-require 'json'
-require 'net/http'
-require 'uri'
-
 def toot_test(id, account)
   puts id
   uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}")

@@ -1,14 +1,17 @@
 # -*- coding: utf-8 -*-
 require "thread"
+require 'net/http'
+require 'uri'
 require "json"
 require "eventmachine"
 require "faye/websocket"
 require 'nokogiri'
+require_relative "./toot_test"
+require_relative './fav'
 require_relative './toot'
-require_relative "./stream"
 require_relative './model.rb'
-require_relative "./command"
-
+require_relative "./stream"
+require_relative "./create_toot"
 
 Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
@@ -23,8 +26,8 @@ Plugin.create(:mikutodon) do
 
 
   settings "mikutodon" do
-     # エラー対策
-#    boolean("Mastodonに投稿する", :mastodon_post)
+    # エラー対策
+    # boolean("Mastodonに投稿する", :mastodon_post)
     input(_("URL"), :account_host)
     input(_("とーくん"), :account_token)
     input(_("CW使用時の警告文"), :cw_text)
@@ -72,47 +75,40 @@ Plugin.create(:mikutodon) do
 
   end
 
-  # 表示条件を満たすデータに加工
-  def create_toot(status)
-    status_parse = JSON.parse(status)
 
-    created_time = status_parse["created_at"]
+# ふぁぼふぁぼこまんど
+  command(:mastodon_fav,
+          name: "お気に入り",
+          condition: lambda{ |opt|
+            opt.messages.any? { |message|
+              message.is_a?(MstdnToot)
+            }
+          },
+          visible: true,
+          role: :timeline) do |opt|
+    opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
+      mstdn_fav(message[:id], account)
+    }
+  end
 
-    data = if status_parse["reblog"].empty?
-      status_parse
-    else 
-      status_parse["reblog"]
+
+# CWで投稿するコマンドを追加
+  command(:mastodon_cw,
+          name: "CWで投稿",
+          condition: lambda{ |opt| true },
+          visible: true,
+          role: :postbox) do |opt|
+    cw_text = UserConfig[:cw_text]
+
+    # もしCWの文章が指定されていなかった場合は自動で閲覧注意を挿入
+    if cw_text.empty?
+      cw_text = "閲覧注意！"
     end
- 
 
-    # HTMLのParse
-    toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").text
+    text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text 
+    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])    
 
-    
-    user_name = if data["account"] ["display_name"].empty?
-      data["account"] ["username"]
-    else
-      data["account"] ["display_name"]
-    end
-
-  
-    user = MstdnUser.new_ifnecessary(
-      name: user_name,
-      link: data["account"] ["url"],
-      created: Time.parse(data["account"] ["created_at"]).localtime,
-      profile_image_url: data["account"] ["avatar"],
-      id: data["account"]["id"].to_i
-    )
-    
-    toot = MstdnToot.new_ifnecessary(
-      id: data["id"].to_i,
-      link: data["url"],
-      description: toot_body,
-      created: Time.parse(created_time).localtime,
-      user: user
-    )
-    
-    return toot
+    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
 
 
