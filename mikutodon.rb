@@ -7,6 +7,7 @@ require 'nokogiri'
 require_relative './toot'
 require_relative "./stream"
 require_relative './model.rb'
+require_relative './fav.rb'
 
 Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
@@ -22,8 +23,6 @@ Plugin.create(:mikutodon) do
 
   settings "mikutodon" do
      # エラー対策
-#    UserConfig[:host] ||= :host
-#    UserConfig[:token] ||= :token
 #    boolean("Mastodonに投稿する", :mastodon_post)
     input(_("URL"), :account_host)
     input(_("とーくん"), :account_token)
@@ -114,6 +113,23 @@ Plugin.create(:mikutodon) do
     
     return toot
   end
+
+
+  command(:mastodon_fav,
+          name: "お気に入り",
+          condition: lambda{ |opt|
+            opt.messages.any? { |message|
+              message.is_a?(MstdnToot)
+            }
+          },
+          visible: true,
+          role: :timeline) { |opt|
+      opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
+        mstdn_fav(message[:id], account)
+      }
+    }
+  
+
 
 
   # CWで投稿するコマンドを追加
