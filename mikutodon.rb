@@ -12,6 +12,7 @@ require_relative './toot'
 require_relative './model.rb'
 require_relative "./stream"
 require_relative "./create_toot"
+require_relative "./reblog"
 
 Plugin.create(:mikutodon) do
   # ランダム公開範囲用乱数
@@ -88,6 +89,20 @@ Plugin.create(:mikutodon) do
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
       mstdn_fav(message[:id], account)
+    }
+  end
+
+  command(:mastodon_reblog,
+          name: "ブースト",
+          condition: lambda{ |opt|
+            opt.messages.any? { |message|
+              message.is_a?(MstdnToot)
+            }
+          },
+          visible: true,
+          role: :timeline) do |opt|
+    opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
+      mstdn_reblog(message[:id], account)
     }
   end
 
