@@ -1,4 +1,4 @@
-def post_toot(text, cw, account, config)  
+def post_toot(text, cw, account, config, random)  
   vis = 
     case config
       when 0 then
