@@ -13,8 +13,6 @@ require_relative "./create_toot"
 require_relative "./toot_operation"
 
 Plugin.create(:mikutodon) do
-  # ランダム公開範囲用乱数
-  random = Random.new
   cw  = ""
   vis = "public"
 
@@ -119,7 +117,7 @@ Plugin.create(:mikutodon) do
     end
 
     text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text 
-    post_toot(text, cw_text, account, UserConfig[:mastodon_vis], random)    
+    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])    
 
     Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
@@ -157,7 +155,7 @@ Plugin.create(:mikutodon) do
       activity :system, "正規表現だよ！"
     end
 
-    post_toot(text, cw, account, UserConfig[:mastodon_vis], random)
+    post_toot(text, cw, account, UserConfig[:mastodon_vis])
 
     
 #    end

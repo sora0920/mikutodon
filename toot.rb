@@ -1,4 +1,4 @@
-def post_toot(text, cw, account, config, random)  
+def post_toot(text, cw, account, config)  
   vis = 
     case config
       when 0 then
@@ -10,7 +10,7 @@ def post_toot(text, cw, account, config, random)
       when 3 then
         vis = "direct"
       when 4 then
-        case random.rand(1..400)
+        case rand(1..400)
         when 1..100 then
           vis = "public"
         when 101..200 then
