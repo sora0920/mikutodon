@@ -6,7 +6,6 @@ require "json"
 require "eventmachine"
 require "faye/websocket"
 require 'nokogiri'
-require_relative './toot'
 require_relative './model.rb'
 require_relative "./stream"
 require_relative "./create_toot"
