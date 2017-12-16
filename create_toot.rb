@@ -12,9 +12,15 @@ def create_toot(status)
 
 
   # HTMLのParse
-  toot_body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8").text
 
+  body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8")
   
+  body.search('br').each do |br|
+    br.replace("\n")
+  end
+
+  toot_body = body.text
+ 
   user_name = if data["account"] ["display_name"].empty?
     data["account"] ["username"]
   else
