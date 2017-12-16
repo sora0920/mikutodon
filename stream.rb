@@ -14,8 +14,6 @@ def stream(account, tl, tl_name, toots)
       ws.on :close do |e|
         puts "connection close."
         puts e
-        activity :system, "こねくしょんくろーず！りとらい！"
-        timeline_start(account)
       end
 
       ws.on :message do |msg|
