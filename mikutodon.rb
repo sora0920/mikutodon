@@ -101,6 +101,13 @@ Plugin.create(:mikutodon) do
     }
   end
 
+  command(:mstdn_tl_retry,
+          name: "ストリーミングの再接続",
+          condition: lambda{ |opt| $tl_close },
+          visible: true,
+          role: :timeline) do |opt|
+    timeline_start(account)
+  end
 
 # CWで投稿するコマンドを追加
   command(:mastodon_cw,

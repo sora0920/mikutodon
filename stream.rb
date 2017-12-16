@@ -5,15 +5,18 @@ def stream(account, tl, tl_name, toots)
     )
       ws.on :open do |e|
         activity :system, "こねくと！"
+        $tl_close = false
       end
 
       ws.on :error do |e|
-        puts "error"
+        activity :system, "えらー！\n#{e}"
       end
 
       ws.on :close do |e|
         puts "connection close."
         puts e
+        activity :system, "こねくしょんくろーず！"
+        $tl_close = true        
       end
 
       ws.on :message do |msg|
