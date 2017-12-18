@@ -18,6 +18,8 @@ class MstdnToot < Retriever::Model
   field.string :link
   field.string :description
   field.time   :created
+  field.int    :favorite_count, required: true
+  field.int    :retweet_count, required: true
   field.has    :user, MstdnUser, required: true
 
   entity_class Retriever::Entity::URLEntity
