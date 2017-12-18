@@ -1,0 +1,9 @@
+---
+slug: :mikutodon
+depends:
+  mikutter: 3.5.12
+  plugin: []
+version: '1.0'
+author:
+name: mikutodon
+description: みくったーがぞうにのる
