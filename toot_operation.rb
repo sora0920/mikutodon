@@ -19,7 +19,7 @@ def mstdn_fav(id, account)
 
   res = https.request(req)
 
-  activity :system,  "#{res.code}\n#{res.message}"
+  puts "#{res.code}\n#{res.message}"
 end
 
 
@@ -44,7 +44,7 @@ def mstdn_reblog(id, account)
 
   res = https.request(req)
 
-  activity :system,  "#{res.code}\n#{res.message}"
+  puts "#{res.code}\n#{res.message}"
 end
 
 def toot_test(id, account)
@@ -117,7 +117,7 @@ def post_toot(text, cw, account, config)
   res = https.request(req)
 
   $toot_result = res.body
-  activity :system,  "#{res.code}\n#{res.message}"
-  
+  puts "#{res.code}\n#{res.message}"
+
 end
 
