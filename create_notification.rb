@@ -77,5 +77,14 @@ def create_notification(json)
         toot_body = body.text
       end
       activity :mstdn_notification, "#{name}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
+    when "follow" then
+      name =  if data["account"] ["display_name"].empty?
+        data["account"] ["username"]
+      else
+        data["account"] ["display_name"]
+      end
+      activity :mstdn_notification, "#{name}(#{data["account"]["acct"]})にフォローされました"
+    else 
+      puts data
   end 
 end
