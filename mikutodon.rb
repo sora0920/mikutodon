@@ -21,9 +21,11 @@ Plugin.create(:mikutodon) do
     [ds.merge(mastodon: 'Mastodon')]
   end
 
+  defactivity "mstdn_fav_notification", "mikutodon ふぁぼ"
+  defactivity "mstdn_reblog_notification", "mikutodon ぶーすと"
+  defactivity "mstdn_follow_notification", "mikutodon ふぉろー"
 
-  defactivity "mstdn_notification", "通知"
-  
+
 
   settings "mikutodon" do
     # エラー対策
