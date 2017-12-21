@@ -38,7 +38,7 @@ def create_notification(json)
 
         toot_body = body.text
       end
-      activity :mstdn_fav_notification, "#{name}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
+      activity :mstdn_fav, "#{name}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
     when "reblog" then
       name =  if data["account"] ["display_name"].empty?
         data["account"] ["username"]
@@ -75,14 +75,14 @@ def create_notification(json)
 
         toot_body = body.text
       end
-      activity :mstdn_reblog_notification, "#{name}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
+      activity :mstdn_reblog, "#{name}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
     when "follow" then
       name =  if data["account"] ["display_name"].empty?
         data["account"] ["username"]
       else
         data["account"] ["display_name"]
       end
-      activity :mstdn_follow_notification, "#{name}(#{data["account"]["acct"]})にフォローされました"
+      activity :mstdn_follow, "#{name}(#{data["account"]["acct"]})にフォローされました"
     else 
       puts data
   end 
