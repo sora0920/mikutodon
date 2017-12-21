@@ -23,6 +23,8 @@ def stream(account, tl, tl_name, toots)
         toot = JSON.parse(msg.data)
         if toot["event"] == "update"
           timeline(tl_name) << create_toot(toot["payload"])
+        elsif toot["event"] == "notification"
+          create_notification(toot["payload"])
         else
           puts toot
         end

@@ -10,6 +10,7 @@ require_relative './model.rb'
 require_relative "./stream"
 require_relative "./create_toot"
 require_relative "./toot_operation"
+require_relative "./create_notification"
 
 Plugin.create(:mikutodon) do
   cw  = ""
@@ -20,6 +21,9 @@ Plugin.create(:mikutodon) do
     [ds.merge(mastodon: 'Mastodon')]
   end
 
+
+  defactivity "mstdn_notification", "通知"
+  
 
   settings "mikutodon" do
     # エラー対策
