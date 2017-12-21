@@ -47,7 +47,8 @@ def create_toot(status)
     link: data["account"] ["url"],
     created: Time.parse(data["account"] ["created_at"]).localtime,
     profile_image_url: data["account"] ["avatar"],
-    id: data["account"]["id"].to_i
+    id: data["account"]["id"].to_i,
+    idname: data["account"]["acct"]
   )
   
   toot = MstdnToot.new_ifnecessary(

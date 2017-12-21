@@ -7,6 +7,15 @@ class MstdnUser < Retriever::Model
   field.time   :created
   field.string :profile_image_url
   field.int    :id
+  field.string :idname
+
+  def perma_link
+    link
+  end
+
+  def modified
+    created
+  end
 end
 
 class MstdnToot < Retriever::Model
