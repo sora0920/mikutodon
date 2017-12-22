@@ -11,6 +11,7 @@ require_relative "./stream"
 require_relative "./create_toot"
 require_relative "./toot_operation"
 require_relative "./create_notification"
+require_relative "./orig_parse"
 
 Plugin.create(:mikutodon) do
   cw  = ""
