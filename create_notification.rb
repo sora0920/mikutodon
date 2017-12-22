@@ -3,12 +3,6 @@ def create_notification(json)
 
   case data["type"]
     when "favourite" then
-      name =  if data["account"] ["display_name"].empty?
-        data["account"] ["username"]
-      else
-        data["account"] ["display_name"]
-      end
-
       user_name =  if data["status"]["account"] ["display_name"].empty?
         data["status"]["account"] ["username"]
       else
@@ -38,14 +32,8 @@ def create_notification(json)
 
         toot_body = body.text
       end
-      activity :mstdn_fav, "#{name}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
+      activity :mstdn_fav, "#{parse_name(data)}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
     when "reblog" then
-      name =  if data["account"] ["display_name"].empty?
-        data["account"] ["username"]
-      else
-        data["account"] ["display_name"]
-      end
-
       user_name =  if data["status"]["account"] ["display_name"].empty?
         data["status"]["account"] ["username"]
       else
@@ -75,15 +63,18 @@ def create_notification(json)
 
         toot_body = body.text
       end
-      activity :mstdn_reblog, "#{name}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
+      activity :mstdn_reblog, "#{parse_name(data)}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
     when "follow" then
-      name =  if data["account"] ["display_name"].empty?
-        data["account"] ["username"]
-      else
-        data["account"] ["display_name"]
-      end
-      activity :mstdn_follow, "#{name}(#{data["account"]["acct"]})にフォローされました"
+      activity :mstdn_follow, "#{parse_name(data)}(#{data["account"]["acct"]})にフォローされました"
     else 
       puts data
   end 
+end
+
+def parse_name(data)
+  if data["account"] ["display_name"].empty?
+    return data["account"] ["username"]
+  else
+    return data["account"] ["display_name"]
+  end
 end
