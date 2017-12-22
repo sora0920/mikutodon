@@ -25,7 +25,7 @@ Plugin.create(:mikutodon) do
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
   defactivity "mstdn_reblog", "mikutodon ぶーすと"
   defactivity "mstdn_follow", "mikutodon ふぉろー"
-
+  defactivity "mstdn_mention", "mikutodon 返信"
 
 
   settings "mikutodon" do
