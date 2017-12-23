@@ -1,6 +1,6 @@
 class MstdnUser < Retriever::Model
   include Retriever::Model::UserMixin
-  
+
   register :mstdn_user, name: "Mastodon Timeline User"
   field.string :name, required: true
   field.string :link

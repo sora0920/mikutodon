@@ -1,4 +1,4 @@
-def mstdn_fav(id, account) 
+def mstdn_fav(id, account)
   toot = toot_test(id, account)
 
   if !(toot["body"] ["favourited"])
@@ -23,7 +23,7 @@ def mstdn_fav(id, account)
 end
 
 
-def mstdn_reblog(id, account) 
+def mstdn_reblog(id, account)
   toot = toot_test(id, account)
 
   if !(toot["body"] ["reblogged"])
@@ -66,8 +66,8 @@ def toot_test(id, account)
 end
 
 
-def post_toot(text, cw, account, config)  
-  vis = 
+def post_toot(text, cw, account, config)
+  vis =
     case config
       when 0 then
         vis = "public"
@@ -93,7 +93,7 @@ def post_toot(text, cw, account, config)
       else
         vis = "public"
       end
-  
+
   uri = URI.parse("https://#{account[:host]}/api/v1/statuses")
   https = Net::HTTP.new(uri.host, uri.port)
   https.use_ssl = true

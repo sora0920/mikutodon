@@ -12,7 +12,7 @@ def create_notification(json)
       if !(data["status"]["spoiler_text"].empty?)
         cw_body = Nokogiri::HTML.parse(data["status"]["spoiler_text"],nil,"UTF-8")
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         cw_body.search('br').each do |br|
           br.replace("\n")
         end
@@ -25,7 +25,7 @@ def create_notification(json)
         # HTMLのParse
 
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         body.search('br').each do |br|
           br.replace("\n")
         end
@@ -33,7 +33,7 @@ def create_notification(json)
         toot_body = body.text
       end
       activity :mstdn_fav, "#{parse_name(data)}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
-    
+
     when "reblog" then
       user_name =  if data["status"]["account"] ["display_name"].empty?
         data["status"]["account"] ["username"]
@@ -44,7 +44,7 @@ def create_notification(json)
       if !(data["status"]["spoiler_text"].empty?)
         cw_body = Nokogiri::HTML.parse(data["status"]["spoiler_text"],nil,"UTF-8")
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         cw_body.search('br').each do |br|
           br.replace("\n")
         end
@@ -57,7 +57,7 @@ def create_notification(json)
         # HTMLのParse
 
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         body.search('br').each do |br|
           br.replace("\n")
         end
@@ -65,15 +65,15 @@ def create_notification(json)
         toot_body = body.text
       end
       activity :mstdn_reblog, "#{parse_name(data)}さんにぶーすとされました。\n\n#{user_name}: #{toot_body}"
-    
+
     when "follow" then
       activity :mstdn_follow, "#{parse_name(data)}(#{data["account"]["acct"]})にフォローされました"
-    
-    when "mention" then 
+
+    when "mention" then
       if !(data["status"]["spoiler_text"].empty?)
         cw_body = Nokogiri::HTML.parse(data["status"]["spoiler_text"],nil,"UTF-8")
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         cw_body.search('br').each do |br|
           br.replace("\n")
         end
@@ -86,7 +86,7 @@ def create_notification(json)
         # HTMLのParse
 
         body = Nokogiri::HTML.parse(data["status"]["content"],nil,"UTF-8")
-        
+
         body.search('br').each do |br|
           br.replace("\n")
         end
@@ -94,9 +94,9 @@ def create_notification(json)
         toot_body = body.text
       end
       activity :mstdn_mention, "#{parse_name(data)}から返信があります。\n\n#{toot_body}"
-    else 
+    else
       activity :mikutodon_debug_message, data
-  end 
+  end
 end
 
 

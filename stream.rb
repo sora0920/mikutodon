@@ -16,7 +16,7 @@ def stream(account, tl, tl_name, toots)
         puts "connection close."
         puts e
         activity :mikutodon_debug_message, "こねくしょんくろーず！"
-        $tl_close = true        
+        $tl_close = true
       end
 
       ws.on :message do |msg|
