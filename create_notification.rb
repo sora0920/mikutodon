@@ -95,7 +95,7 @@ def create_notification(json)
       end
       activity :mstdn_mention, "#{parse_name(data)}から返信があります。\n\n#{toot_body}"
     else 
-      puts data
+      activity :mikutodon_debug_message, data
   end 
 end
 

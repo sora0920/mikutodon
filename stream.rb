@@ -4,18 +4,18 @@ def stream(account, tl, tl_name, toots)
       "wss://#{account[:host]}/api/v1/streaming?access_token=#{account[:token]}&stream=#{tl}",
     )
       ws.on :open do |e|
-        activity :system, "こねくと！"
+        activity :mikutodon_debug_message, "こねくと！"
         $tl_close = false
       end
 
       ws.on :error do |e|
-        activity :system, "えらー！\n#{e}"
+        activity :mikutodon_debug_message, "えらー！\n#{e}"
       end
 
       ws.on :close do |e|
         puts "connection close."
         puts e
-        activity :system, "こねくしょんくろーず！"
+        activity :mikutodon_debug_message, "こねくしょんくろーず！"
         $tl_close = true        
       end
 

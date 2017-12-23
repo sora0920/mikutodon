@@ -19,7 +19,7 @@ def mstdn_fav(id, account)
 
   res = https.request(req)
 
-  puts "#{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "#{res.code}\n#{res.message}"
 end
 
 
@@ -44,11 +44,10 @@ def mstdn_reblog(id, account)
 
   res = https.request(req)
 
-  puts "#{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "#{res.code}\n#{res.message}"
 end
 
 def toot_test(id, account)
-  puts id
   uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}")
   token = " Bearer " + account[:token]
 
@@ -89,7 +88,7 @@ def post_toot(text, cw, account, config)
         when 301..400 then
           vis = "direct"
         else
-          activity :system, "0から3までの乱数が0から3以外の数値を出したよ！\nすごいね！どう考えてもバグだね！"
+          activity :mikutodon_debug_message, "0から3までの乱数が0から3以外の数値を出したよ！\nすごいね！どう考えてもバグだね！"
         end
       else
         vis = "public"
@@ -117,7 +116,7 @@ def post_toot(text, cw, account, config)
   res = https.request(req)
 
   $toot_result = res.body
-  puts "#{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "#{res.code}\n#{res.message}"
 
 end
 

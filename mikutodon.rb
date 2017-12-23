@@ -26,7 +26,7 @@ Plugin.create(:mikutodon) do
   defactivity "mstdn_reblog", "mikutodon ぶーすと"
   defactivity "mstdn_follow", "mikutodon ふぉろー"
   defactivity "mstdn_mention", "mikutodon 返信"
-
+  defactivity "mikutodon_debug_message", "mikutodon デバックメッセージ"
 
   settings "mikutodon" do
     # エラー対策
@@ -165,7 +165,7 @@ Plugin.create(:mikutodon) do
 #      end
 #      req_warn.show_all
 #    else
-      activity :system, "正規表現だよ！"
+      activity :mikutodon_debug_message, "正規表現だよ！"
     end
 
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
