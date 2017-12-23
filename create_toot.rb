@@ -61,5 +61,8 @@ def create_toot(status)
     retweet_count: data["reblogs_count"]
   )
   
-  return toot
+  ary = []
+  ary.push(toot)
+
+  return ary
 end

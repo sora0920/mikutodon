@@ -17,9 +17,11 @@ Plugin.create(:mikutodon) do
   cw  = ""
   vis = "public"
 
-
+  
   filter_extract_datasources do |ds|
-    [ds.merge(mastodon: 'Mastodon')]
+    [{mastodon_home: "mikutodonHomeTimeline", 
+      mastodon_local: "mikutodonLocalTimeline",
+      mastodon_public: "mikutodonPublicTimeline"}.merge(ds)]
   end
 
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
@@ -44,21 +46,6 @@ Plugin.create(:mikutodon) do
   }
 
 
-  # Mastodon用タイムラインの生成
-  tab :mastodon_home, 'HomeTimeline' do
-    set_icon "https://#{account[:host]}/favicon.ico"
-    timeline :mastodon_home
-  end  
- 
-  tab :mastodon_local, "LocalTimeline" do
-    set_icon "https://#{account[:host]}/favicon.ico"
-    timeline :mastodon_local
-  end
-
-  tab :mastodon_public, "PublicTimeline" do
-    set_icon "https://#{account[:host]}/favicon.ico"
-    timeline :mastodon_public
-  end
 
   
   # タイムラインのストリームをスタート

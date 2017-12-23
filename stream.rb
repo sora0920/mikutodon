@@ -22,7 +22,7 @@ def stream(account, tl, tl_name, toots)
       ws.on :message do |msg|
         toot = JSON.parse(msg.data)
         if toot["event"] == "update"
-          timeline(tl_name) << create_toot(toot["payload"])
+          Plugin.call :extract_receive_message, tl_name, create_toot(toot["payload"])
         elsif toot["event"] == "notification"
           create_notification(toot["payload"])
         else
