@@ -17,7 +17,6 @@ Plugin.create(:mikutodon) do
   cw  = ""
   vis = "public"
 
-
   filter_extract_datasources do |ds|
     [{mastodon_home: "mikutodonHomeTimeline",
       mastodon_local: "mikutodonLocalTimeline",
@@ -45,7 +44,9 @@ Plugin.create(:mikutodon) do
     :host => UserConfig[:account_host]
   }
 
-
+  defimageopener("MastodonMedia", /#{URI.regexp}\/media\//){ |url|
+    open(url)
+  }
 
 
   # タイムラインのストリームをスタート
