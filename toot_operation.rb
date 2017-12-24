@@ -19,7 +19,7 @@ def mstdn_fav(id, account)
 
   res = https.request(req)
 
-  activity :mikutodon_debug_message, "fav: #{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "fav: #{res.code} #{res.message}"
 end
 
 
@@ -44,7 +44,7 @@ def mstdn_reblog(id, account)
 
   res = https.request(req)
 
-  activity :mikutodon_debug_message, "reblog: #{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "reblog: #{res.code} #{res.message}"
 end
 
 def toot_test(id, account)
@@ -116,7 +116,7 @@ def post_toot(text, cw, account, config)
   res = https.request(req)
 
   $toot_result = res.body
-  activity :mikutodon_debug_message, "toot: #{res.code}\n#{res.message}"
+  activity :mikutodon_debug_message, "toot: #{res.code} #{res.message}"
 
 end
 
