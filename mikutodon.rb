@@ -124,9 +124,13 @@ Plugin.create(:mikutodon) do
 
 
 
-  # 投稿欄を乗っ取りMastodonに投稿
-  filter_gui_postbox_post do |gui_postbox, opt|
-    text = Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text
+# Mastodonに投稿
+  command(:mastodon_toot,
+          name: "Mastodonに投稿する",
+          condition: lambda{ |opt| true },
+          visible: true,
+          role: :postbox) do |opt|
+    text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text
 
     # もし投稿内容が正規表現なら警告する機能(未実装)
     if text =~ /^s\/.+\/.+\/?$/
@@ -160,7 +164,7 @@ Plugin.create(:mikutodon) do
     
 #    end
 
-    Plugin.create(:gtk).widgetof(gui_postbox).widget_post.buffer.text = ""
+    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
     
   # タイムラインの開始を開始
