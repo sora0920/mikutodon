@@ -6,14 +6,14 @@ def create_toot(status)
 
   data = if status_parse["reblog"].empty?
     status_parse
-  else 
+  else
     status_parse["reblog"]
   end
 
   if !(data["spoiler_text"].empty?)
     cw_body = Nokogiri::HTML.parse(data["spoiler_text"],nil,"UTF-8")
     body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8")
-    
+
     cw_body.search('br').each do |br|
       br.replace("\n")
     end
@@ -26,13 +26,13 @@ def create_toot(status)
     # HTMLのParse
 
     body = Nokogiri::HTML.parse(data["content"],nil,"UTF-8")
-    
+
     body.search('br').each do |br|
       br.replace("\n")
     end
 
     toot_body = body.text
-    
+
   end
 
   user_name = if data["account"] ["display_name"].empty?
@@ -50,7 +50,7 @@ def create_toot(status)
     id: data["account"]["id"].to_i,
     idname: data["account"]["acct"]
   )
-  
+
   toot = MstdnToot.new_ifnecessary(
     id: data["id"].to_i,
     link: data["url"],
@@ -60,7 +60,7 @@ def create_toot(status)
     favorite_count: data["favourites_count"],
     retweet_count: data["reblogs_count"]
   )
-  
+
   ary = []
   ary.push(toot)
 

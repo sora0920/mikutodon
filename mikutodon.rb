@@ -17,9 +17,9 @@ Plugin.create(:mikutodon) do
   cw  = ""
   vis = "public"
 
-  
+
   filter_extract_datasources do |ds|
-    [{mastodon_home: "mikutodonHomeTimeline", 
+    [{mastodon_home: "mikutodonHomeTimeline",
       mastodon_local: "mikutodonLocalTimeline",
       mastodon_public: "mikutodonPublicTimeline"}.merge(ds)]
   end
@@ -47,7 +47,7 @@ Plugin.create(:mikutodon) do
 
 
 
-  
+
   # タイムラインのストリームをスタート
   def timeline_start(account)
     Thread.new{
@@ -116,8 +116,8 @@ Plugin.create(:mikutodon) do
       cw_text = "閲覧注意！"
     end
 
-    text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text 
-    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])    
+    text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text
+    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])
 
     Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
@@ -161,12 +161,12 @@ Plugin.create(:mikutodon) do
 
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
 
-    
+
 #    end
 
     Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
-    
+
   # タイムラインの開始を開始
   on_boot do |service|
     timeline_start(account)
