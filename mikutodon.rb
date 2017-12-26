@@ -99,7 +99,9 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      mstdn_fav(message[:id], account)
+      mstdn_fav(message[:id], account).trap { |err|
+        error err
+      }
     }
   end
 
@@ -113,7 +115,9 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      mstdn_reblog(message[:id], account)
+      mstdn_reblog(message[:id], account).trap { |err|
+        error err
+      }
     }
   end
 
@@ -139,9 +143,9 @@ Plugin.create(:mikutodon) do
     end
 
     text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text
-    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])
-
-    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    post_toot(text, cw_text, account, UserConfig[:mastodon_vis]).next {
+      Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }
   end
 
 
@@ -181,12 +185,12 @@ Plugin.create(:mikutodon) do
       activity :mikutodon_debug_message, "正規表現だよ！"
     end
 
-    post_toot(text, cw, account, UserConfig[:mastodon_vis])
-    
+    post_toot(text, cw, account, UserConfig[:mastodon_vis]).next {
+      Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }
+
 
 #    end
-
-    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
 
   # タイムラインの開始を開始
