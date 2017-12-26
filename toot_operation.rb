@@ -1,7 +1,7 @@
 def mstdn_fav(id, account)
   toot = toot_test(id, account)
 
-  if !(toot["body"] ["favourited"])
+  if !(toot["body"]["favourited"])
     uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}/favourite")
   else
     uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}/unfavourite")
@@ -27,7 +27,7 @@ end
 def mstdn_reblog(id, account)
   toot = toot_test(id, account)
 
-  if !(toot["body"] ["reblogged"])
+  if !(toot["body"]["reblogged"])
     uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}/reblog")
   else
     uri = URI.parse("https://#{account[:host]}/api/v1/statuses/#{id}/unreblog")

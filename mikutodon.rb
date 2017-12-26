@@ -67,7 +67,7 @@ Plugin.create(:mikutodon) do
   end
 
 
-# ふぁぼふぁぼこまんど
+  # ふぁぼふぁぼこまんど
   command(:mastodon_fav,
           name: "お気に入り",
           condition: lambda{ |opt|
@@ -108,7 +108,7 @@ Plugin.create(:mikutodon) do
     timeline_start(account)
   end
 
-# CWで投稿するコマンドを追加
+  # CWで投稿するコマンドを追加
   command(:mastodon_cw,
           name: "CWで投稿",
           condition: lambda{ |opt| true },
@@ -129,7 +129,7 @@ Plugin.create(:mikutodon) do
 
 
 
-# Mastodonに投稿
+  # Mastodonに投稿
   command(:mastodon_toot,
           name: "Mastodonに投稿する",
           condition: lambda{ |opt| true },
