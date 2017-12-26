@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+
+# ふぁぼのステータスを反転する
+# @param [String] id ステータスID
+# @param [Hash] account アカウント情報
+# @return [nil]
 def mstdn_fav(id, account)
   toot_test(id, account).next { |toot|
     uri = if !(toot[:body]["favourited"])
@@ -20,7 +26,10 @@ def mstdn_fav(id, account)
   }
 end
 
-
+# ブーストのステータスを反転する
+# @param [String] id ステータスID
+# @param [Hash] account アカウント情報
+# @return [nil]
 def mstdn_reblog(id, account)
   toot_test(id, account).next { |toot|
     uri = if !(toot[:body]["reblogged"])
@@ -43,16 +52,19 @@ def mstdn_reblog(id, account)
   }
 end
 
+# トゥートの確認
+# @param [String] id ステータスID
+# @param [Hash] account アカウント情報
+# @return [Delayer::Deferred::Deferredable] {code:, message:, body:}なオブジェクトを引数にcallbackするDeferred
 def toot_test(id, account)
   Thread.new(id, account) { |status_id, acct|
     uri = URI.parse("https://#{acct[:host]}/api/v1/statuses/#{status_id}")
-    token = "Bearer #{acct[:token]}"
 
     https = Net::HTTP.new(uri.host, uri.port)
     https.use_ssl = true
 
     req = Net::HTTP::Get.new(uri.path)
-    req["Authorization"] = token
+    req["Authorization"] = "Bearer #{acct[:token]}"
 
     https.request(req)
   }.next { |res|
@@ -64,9 +76,14 @@ def toot_test(id, account)
   }
 end
 
-
+# トゥートを投稿する
+# @param [String] text 投稿文字列
+# @param [Boolean] cw CWの警告文字列
+# @param [Hash] account アカウント情報
+# @param [Integer] config visの設定
+# @return [nil]
 def post_toot(text, cw, account, config)
-  Thread.new(text, cw, account, config) { |post_text, contents_w, acct, conf|
+  Thread.new(text, cw, account, config) { |post_text, cw_text, acct, conf|
     vis = case conf
           when 0 then
             "public"
@@ -91,7 +108,7 @@ def post_toot(text, cw, account, config)
     data = {
       status: post_text,
       visibility: vis,
-      spoiler_text: contents_w
+      spoiler_text: cw_text
     }.to_json
 
     req["Content-Type"] = "application/json"
@@ -115,6 +132,8 @@ def mikutodon_is_error?(res, type)
   end
 end
 
+# visをランダムに決めて返す
+# @return [String] visのステータス文字列
 def random_vis
   case rand(1..400)
   when 1..100 then
