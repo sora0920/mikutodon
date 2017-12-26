@@ -78,7 +78,9 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      mstdn_fav(message[:id], account)
+      Thread.new {
+        mstdn_fav(message[:id], account)
+      }
     }
   end
 
@@ -92,7 +94,9 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      mstdn_reblog(message[:id], account)
+      Thread.new {
+        mstdn_reblog(message[:id], account)
+      }
     }
   end
 
