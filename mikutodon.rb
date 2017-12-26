@@ -144,7 +144,10 @@ Plugin.create(:mikutodon) do
 
     text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text
     post_toot(text, cw_text, account, UserConfig[:mastodon_vis]).next {
+      # 投稿成功時のみバッファをクリア
       Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }.trap { |err|
+      error err
     }
   end
 
@@ -186,7 +189,10 @@ Plugin.create(:mikutodon) do
     end
 
     post_toot(text, cw, account, UserConfig[:mastodon_vis]).next {
+      # 投稿成功時のみバッファをクリア
       Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }.trap { |err|
+      error err
     }
 
 
