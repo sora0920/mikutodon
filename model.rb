@@ -32,5 +32,9 @@ class MstdnToot < Retriever::Model
   field.has    :user, MstdnUser, required: true
 
   entity_class Retriever::Entity::URLEntity
+
+  def perma_link
+    link
+  end
 end
 
