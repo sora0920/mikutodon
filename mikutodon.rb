@@ -32,7 +32,7 @@ Plugin.create(:mikutodon) do
   settings "mikutodon" do
     # エラー対策
     # boolean("Mastodonに投稿する", :mastodon_post)
-    input(_("URL"), :account_host)
+    input(_("インスタンスのドメイン名"), :account_host)
     input(_("とーくん"), :account_token)
     input(_("CW使用時の警告文"), :cw_text)
     select("公開範囲", :mastodon_vis, { 0 => "公開", 1 => "非収載", 2 => "非公開", 3 => "ダイレクト" , 4=> "Random"})
