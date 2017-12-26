@@ -12,6 +12,8 @@ require_relative "./create_toot"
 require_relative "./toot_operation"
 require_relative "./create_notification"
 require_relative "./orig_parse"
+require_relative "./world"
+require_relative "./get-token"
 
 Plugin.create(:mikutodon) do
   cw  = ""
@@ -22,6 +24,21 @@ Plugin.create(:mikutodon) do
       mastodon_local: "mikutodonLocalTimeline",
       mastodon_public: "mikutodonPublicTimeline"}.merge(ds)]
   end
+
+  world_setting(:mastodon, "Mastodon") do
+    label _("インスタンスのドメイン(例: Twitter.com)を入力しOKを押してください。")
+    input "Host", host
+    result = await_input
+    
+    label _("リンクを開きOKを押してください")
+    link create_app(resurt[host])
+
+    resurt = await_input
+
+    label _("リンク先で表示された認証コードを入力しOKを押してください。")
+
+  end
+
 
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
   defactivity "mstdn_reblog", "mikutodon ぶーすと"
