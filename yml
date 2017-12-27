@@ -1,8 +1,9 @@
 ---
 slug: :mikutodon
 depends:
-  mikutter: 3.5.12
-  plugin: []
+  mikutter: 3.6.0
+  plugin: 
+    -world
 version: '1.0'
 author:
 name: mikutodon

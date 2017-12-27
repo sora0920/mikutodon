@@ -26,7 +26,7 @@ Plugin.create(:mikutodon) do
       mastodon_public: "mikutodonPublicTimeline"}.merge(ds)]
   end
 
-  world_setting(:mastodon, "Mastodon") do
+  world_setting(:mikutodon, "Mastodon") do
     label _("インスタンスのドメイン(例: Twitter.com)を入力しOKを押してください。")
     input "Host", :host
 
