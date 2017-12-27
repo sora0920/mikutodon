@@ -10,8 +10,7 @@ def get_user(id, account)
 
   res = https.request(req)
 
-  return  ({'code' => res.code,
-            'message' => res.message,
-            'body' => JSON.parse(res.body)})
-
+  return  ({code: res.code,
+            message: res.message,
+            body: JSON.parse(res.body)})
 end

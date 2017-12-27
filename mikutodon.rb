@@ -14,6 +14,7 @@ require_relative "./create_notification"
 require_relative "./orig_parse"
 require_relative "./world"
 require_relative "./get-token"
+require_relative "./user_operation"
 
 Plugin.create(:mikutodon) do
   cw  = ""
@@ -27,20 +28,20 @@ Plugin.create(:mikutodon) do
 
   world_setting(:mastodon, "Mastodon") do
     label _("インスタンスのドメイン(例: Twitter.com)を入力しOKを押してください。")
-    input "Host", host
+    input "Host", :host
+
     result = await_input
-    
-    label _("リンクを開きOKを押してください")
-    link create_app(resurt[host])
+    label _("リンクを開きリンク先で表示された認証コードを入力しOKを押してください")
+    link create_link(result[:host])
+    input "code", :code
 
-    resurt = await_input
+    result = await_input
 
-    label _("リンク先で表示された認証コードを入力しOKを押してください。")
-    input "code", code
+    world = World.build(get_token(result[:code], result[:host]), result[:host])
 
-    resurt = await_input
+    label "#{world[:name]}@#{world[:host]}としてログインしますか？"
 
-    world = await 
+    world
   end
 
 
@@ -182,7 +183,7 @@ Plugin.create(:mikutodon) do
     end
 
     post_toot(text, cw, account, UserConfig[:mastodon_vis])
-
+    
 
 #    end
 

@@ -25,7 +25,7 @@ def create_link(host)
   return "https://#{host}/oauth/authorize?client_id=#{@app["client_id"]}&response_type=code&redirect_uri=urn:ietf:wg:oauth:2.0:oob&scope=read%20write%20follow"
 end
 
-def get_token(auth_code)
+def get_token(auth_code, host)
   uri = URI.parse("https://#{host}/oauth/token")
 
   https = Net::HTTP.new(uri.host, uri.port)
@@ -49,5 +49,6 @@ def get_token(auth_code)
 
   mikutodon_is_error?(res, "GetToken")
   
-  return JSON.parse(res)["access_token"]
+  result = JSON.parse(res.body)
+  return result["access_token"]
 end

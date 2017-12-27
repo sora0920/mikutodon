@@ -1,17 +1,21 @@
 class World < Diva::Model
   register :mastodon, name: "Mastodon"
 
+  field.string :slug, required: true
+  field.string :name, required: true
   field.string :host, required: true
   field.string :token, required: true
 
-  def self.build(token)
-    world = new(token: token, host: host)
-    world.user = user
+  def self.build(token, host)
+    user = get_user("verify_credentials", {token: token, host: host})[:body]
+    self.new(
+      slug: "mastodon #{user["acct"]}",
+      name: user["username"],
+      host: host,
+      token: token
+    )
   end
 
-  def user
-    MstdnUser.new()
-  end
 #
 #  def user=(new_user)
 #
