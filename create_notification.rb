@@ -3,10 +3,10 @@ def create_notification(json)
 
   case data["type"]
     when "favourite" then
-      user_name =  if data["status"]["account"] ["display_name"].empty?
-        data["status"]["account"] ["username"]
+      user_name =  if data["status"]["account"]["display_name"].empty?
+        data["status"]["account"]["username"]
       else
-        data["status"]["account"] ["display_name"]
+        data["status"]["account"]["display_name"]
       end
 
       if !(data["status"]["spoiler_text"].empty?)
@@ -35,10 +35,10 @@ def create_notification(json)
       activity :mstdn_fav, "#{parse_name(data)}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
 
     when "reblog" then
-      user_name =  if data["status"]["account"] ["display_name"].empty?
-        data["status"]["account"] ["username"]
+      user_name =  if data["status"]["account"]["display_name"].empty?
+        data["status"]["account"]["username"]
       else
-        data["status"]["account"] ["display_name"]
+        data["status"]["account"]["display_name"]
       end
 
       if !(data["status"]["spoiler_text"].empty?)

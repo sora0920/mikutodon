@@ -35,18 +35,18 @@ def create_toot(status)
 
   end
 
-  user_name = if data["account"] ["display_name"].empty?
-    data["account"] ["username"]
+  user_name = if data["account"]["display_name"].empty?
+    data["account"]["username"]
   else
-    data["account"] ["display_name"]
+    data["account"]["display_name"]
   end
 
 
   user = MstdnUser.new_ifnecessary(
     name: user_name,
-    link: data["account"] ["url"],
-    created: Time.parse(data["account"] ["created_at"]).localtime,
-    profile_image_url: data["account"] ["avatar"],
+    link: data["account"]["url"],
+    created: Time.parse(data["account"]["created_at"]).localtime,
+    profile_image_url: data["account"]["avatar"],
     id: data["account"]["id"].to_i,
     idname: data["account"]["acct"]
   )
