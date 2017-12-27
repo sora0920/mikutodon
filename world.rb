@@ -4,9 +4,14 @@ class World < Diva::Model
   field.string :host, required: true
   field.string :token, required: true
 
-#  def user
-#
-#  end
+  def self.build(token)
+    world = new(token: token, host: host)
+    world.user = user
+  end
+
+  def user
+    MstdnUser.new()
+  end
 #
 #  def user=(new_user)
 #

@@ -36,7 +36,11 @@ Plugin.create(:mikutodon) do
     resurt = await_input
 
     label _("リンク先で表示された認証コードを入力しOKを押してください。")
+    input "code", code
 
+    resurt = await_input
+
+    world = await 
   end
 
 
@@ -95,9 +99,7 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      Thread.new {
-        mstdn_fav(message[:id], account)
-      }
+      mstdn_fav(message[:id], account)
     }
   end
 
@@ -111,9 +113,7 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      Thread.new {
-        mstdn_reblog(message[:id], account)
-      }
+      mstdn_reblog(message[:id], account)
     }
   end
 
