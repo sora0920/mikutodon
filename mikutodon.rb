@@ -67,7 +67,7 @@ Plugin.create(:mikutodon) do
   end
 
 
-# ふぁぼふぁぼこまんど
+  # ふぁぼふぁぼこまんど
   command(:mastodon_fav,
           name: "お気に入り",
           condition: lambda{ |opt|
@@ -78,8 +78,8 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      Thread.new {
-        mstdn_fav(message[:id], account)
+      mstdn_fav(message[:id], account).trap { |err|
+        error err
       }
     }
   end
@@ -94,8 +94,8 @@ Plugin.create(:mikutodon) do
           visible: true,
           role: :timeline) do |opt|
     opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
-      Thread.new {
-        mstdn_reblog(message[:id], account)
+      mstdn_reblog(message[:id], account).trap { |err|
+        error err
       }
     }
   end
@@ -108,7 +108,7 @@ Plugin.create(:mikutodon) do
     timeline_start(account)
   end
 
-# CWで投稿するコマンドを追加
+  # CWで投稿するコマンドを追加
   command(:mastodon_cw,
           name: "CWで投稿",
           condition: lambda{ |opt| true },
@@ -122,14 +122,17 @@ Plugin.create(:mikutodon) do
     end
 
     text = Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text
-    post_toot(text, cw_text, account, UserConfig[:mastodon_vis])
-
-    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    post_toot(text, cw_text, account, UserConfig[:mastodon_vis]).next {
+      # 投稿成功時のみバッファをクリア
+      Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }.trap { |err|
+      error err
+    }
   end
 
 
 
-# Mastodonに投稿
+  # Mastodonに投稿
   command(:mastodon_toot,
           name: "Mastodonに投稿する",
           condition: lambda{ |opt| true },
@@ -164,12 +167,15 @@ Plugin.create(:mikutodon) do
       activity :mikutodon_debug_message, "正規表現だよ！"
     end
 
-    post_toot(text, cw, account, UserConfig[:mastodon_vis])
+    post_toot(text, cw, account, UserConfig[:mastodon_vis]).next {
+      # 投稿成功時のみバッファをクリア
+      Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
+    }.trap { |err|
+      error err
+    }
 
 
 #    end
-
-    Plugin.create(:gtk).widgetof(opt.widget).widget_post.buffer.text = ""
   end
 
   # タイムラインの開始を開始
