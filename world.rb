@@ -18,6 +18,10 @@ class World < Diva::Model
     )
   end
 
+  def initialize(hash)
+    super(hash)
+  end
+
   def title
     "#{self.name}@#{self.host}"
   end
@@ -32,6 +36,14 @@ class World < Diva::Model
                        name: self.name,
                        profile_image_url: self.icon})
   end
+
+#  def post(to: nil, message:, **kwrest)
+#    post_toot(message, cw, {token: self.token, host: self.host}, UserConfig[:mastodon_vis])
+#  end
+#
+#  def postable?(world=nil)
+#    # test
+#  end
 end
 
 
