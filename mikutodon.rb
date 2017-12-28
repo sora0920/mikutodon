@@ -12,7 +12,7 @@ require_relative "./create_toot"
 require_relative "./toot_operation"
 require_relative "./create_notification"
 require_relative "./orig_parse"
-require_relative "./get-token"
+require_relative "./account_setup"
 require_relative "./user_operation"
 
 Plugin.create(:mikutodon) do
