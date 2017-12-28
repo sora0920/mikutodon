@@ -48,8 +48,10 @@ class World < Diva::Model
   field.string :host, required: true
   field.string :token, required: true
 
+
   def self.build(token, host)
     user = get_user("verify_credentials", {token: token, host: host})[:body]
+
     self.new(
       id: user["id"],
       slug: "mastodon #{user["username"]}",
@@ -59,23 +61,27 @@ class World < Diva::Model
     )
   end
 
-  def initialize(hash)
-    super(hash)
-  end
+#  def initialize(hash)
+#    super(hash)
+#  end
 
   def title
     "#{self.name}@#{self.host}"
   end
 
-  def icon
+  def icon 
+    Plugin.filtering(:photo_filter, "#{self.icon_url}", [])[1].first
+  end
+
+  def icon_url
     get_user("verify_credentials", {token: self.token, host: self.host})[:body]["avatar"]
   end
 
   def to_hash
     super.merge(user: {id: self.id,
-                       idname: "#{self.name}@#{self.host}",
+                       idname: self.title,
                        name: self.name,
-                       profile_image_url: self.icon})
+                       profile_image_url: self.icon_url})
   end
 
 #  def post(to: nil, message:, **kwrest)
