@@ -58,7 +58,8 @@ def create_toot(status)
     created: Time.parse(created_time).localtime,
     user: user,
     favorite_count: data["favourites_count"],
-    retweet_count: data["reblogs_count"]
+    retweet_count: data["reblogs_count"],
+    sensitive?: data["sensitive"]
   )
 
   ary = []
