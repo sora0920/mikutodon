@@ -84,13 +84,13 @@ class World < Diva::Model
                        profile_image_url: self.icon_url})
   end
 
-#  def post(to: nil, message:, **kwrest)
-#    post_toot(message, cw, {token: self.token, host: self.host}, UserConfig[:mastodon_vis])
-#  end
-#
-#  def postable?(world=nil)
-#    # test
-#  end
+  def post(to: nil, message:, **kwrest)
+    post_toot(message, cw, {token: self.token, host: self.host}, "public")
+  end
+
+  def postable?(world=nil)
+    true
+  end
 end
 
 
