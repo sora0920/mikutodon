@@ -43,6 +43,13 @@ Plugin.create(:mikutodon) do
     world
   end
 
+  defspell(:compose, :mikutodon,
+           condition: -> lambda{ true }
+          ) do |mikutodon, body:|
+						puts "#{body}"
+            puts "#{mikutodon.host}"
+            post_toot(message, "", {host: mikutodon.host, token: mikutodon.token}, "public")
+          end
 
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
   defactivity "mstdn_reblog", "mikutodon ぶーすと"
@@ -93,7 +100,7 @@ Plugin.create(:mikutodon) do
           name: "お気に入り",
           condition: lambda{ |opt|
             opt.messages.any? { |message|
-              message.is_a?(MstdnToot)
+              message.is_a?(MstdnToot) 
             }
           },
           visible: true,
@@ -109,7 +116,7 @@ Plugin.create(:mikutodon) do
           name: "ブースト",
           condition: lambda{ |opt|
             opt.messages.any? { |message|
-              message.is_a?(MstdnToot)
+              message.is_a?(MstdnToot) && (message[:visibility] == ("public" || "unlisted"))
             }
           },
           visible: true,

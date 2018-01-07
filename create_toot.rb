@@ -55,6 +55,7 @@ def create_toot(status)
     id: data["id"].to_i,
     link: data["url"],
     description: toot_body,
+    visibility: data["visibility"],
     created: Time.parse(created_time).localtime,
     user: user,
     favorite_count: data["favourites_count"],

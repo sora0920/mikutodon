@@ -26,6 +26,7 @@ class MstdnToot < Retriever::Model
   field.int    :id
   field.string :link
   field.string :description
+  field.string :visibility
   field.time   :created
   field.int    :favorite_count, required: true
   field.int    :retweet_count, required: true
@@ -84,13 +85,13 @@ class World < Diva::Model
                        profile_image_url: self.icon_url})
   end
 
-  def post(to: nil, message:, **kwrest)
-    post_toot(message, cw, {token: self.token, host: self.host}, "public")
-  end
-
-  def postable?(world=nil)
-    true
-  end
+#  def post(to: nil, message:, **kwrest)
+#    Plugin[:mikutodon].compose(self, world, body: message)
+#  end
+#
+#  def postable?(world=nil)
+#    Plugin[:mikutodon].compose?(self, target)
+#  end
 end
 
 
