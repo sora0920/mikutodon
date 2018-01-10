@@ -54,13 +54,29 @@ module Plugin::Mikutodon
     def self.build(token, host)
       user = get_user("verify_credentials", {token: token, host: host})[:body]
 
-      self.new(
+      world = new(
         id: user["id"],
         slug: "mastodon #{user["username"]}",
         name: user["username"],
         host: host,
         token: token
       )
+
+      user_name = if user["display_name"].empty?
+        user["username"]
+      else
+        user["display_name"]
+      end
+
+      world.user = Plugin::Mikutodon::User.new(
+        name: user_name,
+        link: user["url"],
+        created: Time.parse(user["created_at"]).localtime,
+        profile_image_url: user["avatar"],
+        id: user["id"].to_i,
+        idname: user["acct"]
+      )
+      world
     end
 
   #  def initialize(hash)
@@ -77,6 +93,14 @@ module Plugin::Mikutodon
 
     def icon_url
       get_user("verify_credentials", {token: self.token, host: self.host})[:body]["avatar"]
+    end
+
+    def user
+      @user || Plugin::Mikutodon::User.new(self[:user])
+    end
+
+    def user=(new_user)
+      @user = new_user
     end
 
     def to_hash
