@@ -36,7 +36,7 @@ Plugin.create(:mikutodon) do
 
     result = await_input
 
-    world = World.build(get_token(result[:code], result[:host]), result[:host])
+    world = Plugin::Mikutodon::World.build(get_token(result[:code], result[:host]), result[:host])
 
     label "#{world[:name]}@#{world[:host]}としてログインしますか？"
 
@@ -104,12 +104,12 @@ Plugin.create(:mikutodon) do
           name: "お気に入り",
           condition: lambda{ |opt|
             opt.messages.any? { |message|
-              message.is_a?(MstdnToot) 
+              message.is_a?(Plugin::Mikutodon::Toot) 
             }
           },
           visible: true,
           role: :timeline) do |opt|
-    opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
+    opt.messages.select { |_| _.is_a?(Plugin::Mikutodon::Toot) }.each { |message|
       mstdn_fav(message[:id], account).trap { |err|
         error err
       }
@@ -120,12 +120,12 @@ Plugin.create(:mikutodon) do
           name: "ブースト",
           condition: lambda{ |opt|
             opt.messages.any? { |message|
-              message.is_a?(MstdnToot) && (message[:visibility] == ("public" || "unlisted"))
+              message.is_a?(Plugin::Mikutodon::Toot) && (message[:visibility] == ("public" || "unlisted"))
             }
           },
           visible: true,
           role: :timeline) do |opt|
-    opt.messages.select { |_| _.is_a?(MstdnToot) }.each { |message|
+    opt.messages.select { |_| _.is_a?(Plugin::Mikutodon::Toot) }.each { |message|
       mstdn_reblog(message[:id], account).trap { |err|
         error err
       }

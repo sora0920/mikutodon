@@ -42,7 +42,7 @@ def create_toot(status)
   end
 
 
-  user = MstdnUser.new_ifnecessary(
+  user = Plugin::Mikutodon::User.new_ifnecessary(
     name: user_name,
     link: data["account"]["url"],
     created: Time.parse(data["account"]["created_at"]).localtime,
@@ -51,7 +51,7 @@ def create_toot(status)
     idname: data["account"]["acct"]
   )
 
-  toot = MstdnToot.new_ifnecessary(
+  toot = Plugin::Mikutodon::Toot.new_ifnecessary(
     id: data["id"].to_i,
     link: data["url"],
     description: toot_body,
