@@ -43,10 +43,16 @@ Plugin.create(:mikutodon) do
     world
   end
 
-  defspell(:compose, :mikutodon,
+  defspell(:compose, :mikutodon, 
            condition: -> lambda{ true }
-          ) do |mikutodon, body:|
+          ) do |mikutodon, body: |
             post_toot(body, "", {host: mikutodon.host, token: mikutodon.token}, "public")
+          end
+
+  defspell(:favorite, :mikutodon, :mstdn_toot,
+           condition: -> lambda{ true }
+          ) do |mikutodon, toot |
+            mstdn_fav(toot.id, {host: mikutodon.host, token: mikutodon.token})
           end
 
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
