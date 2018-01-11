@@ -6,7 +6,7 @@ require "json"
 require "eventmachine"
 require "faye/websocket"
 require 'nokogiri'
-require_relative './model.rb'
+require_relative './model'
 require_relative "./stream"
 require_relative "./create_toot"
 require_relative "./toot_operation"
@@ -20,9 +20,16 @@ Plugin.create(:mikutodon) do
   vis = "public"
 
   filter_extract_datasources do |ds|
-    [{mastodon_home: "mikutodonHomeTimeline",
-      mastodon_local: "mikutodonLocalTimeline",
-      mastodon_public: "mikutodonPublicTimeline"}.merge(ds)]
+    Enumerator.new{|y|
+      Plugin.filtering(:worlds, y)
+    }.select{|world|
+      world.class.slug == :mikutodon
+    }.each{|world|
+      ds["MikutodonHomeTimeline_#{world.title}"] = "MikutodonHomeTimeline_#{world.title}" 
+      ds["MikutodonLocalTimeline_#{world.title}"] = "MikutodonLocalTimeline_#{world.title}" 
+      ds["MikutodonPublicTimeline_#{world.title}"] = "MikutodonPublicTimeline_#{world.title}" 
+    }
+    [ds]
   end
 
   world_setting(:mikutodon, "Mastodon") do
@@ -81,22 +88,6 @@ Plugin.create(:mikutodon) do
   }
 
 
-  # タイムラインのストリームをスタート
-  def timeline_start(account)
-    Thread.new{
-      toots_home = []
-      stream(account, "user", :mastodon_home, toots_home)
-    }
-    Thread.new{
-      toots_local = []
-      stream(account, "public:local", :mastodon_local, toots_local)
-    }
-    Thread.new{
-      toots_public = []
-      stream(account, "public", :mastodon_public, toots_public)
-    }
-
-  end
 
 
   # ふぁぼふぁぼこまんど
@@ -132,13 +123,13 @@ Plugin.create(:mikutodon) do
     }
   end
 
-  command(:mstdn_tl_retry,
-          name: "ストリーミングの再接続",
-          condition: lambda{ |opt| $tl_close },
-          visible: true,
-          role: :timeline) do |opt|
-    timeline_start(account)
-  end
+#  command(:mstdn_tl_retry,
+#          name: "ストリーミングの再接続",
+#          condition: lambda{ |opt| $tl_close },
+#          visible: true,
+#          role: :timeline) do |opt|
+#    timeline_start(account)
+#  end
 
   # CWで投稿するコマンドを追加
   command(:mastodon_cw,
@@ -212,7 +203,7 @@ Plugin.create(:mikutodon) do
 
   # タイムラインの開始を開始
   on_boot do |service|
-    timeline_start(account)
+    #timeline_start(account)
   end
 
 
