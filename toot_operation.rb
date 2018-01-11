@@ -124,13 +124,7 @@ def post_toot(text, cw, account, config)
   }
 end
 
-def mikutodon_is_error?(res, type)
-  if res.code != "200"
-    activity :system, "mikutodonError!\n#{type}: #{res.code} #{res.message}\n#{res.body}"
-  else
-    activity :mikutodon_debug_message, "#{type}: #{res.code} #{res.message}"
-  end
-end
+
 
 # visをランダムに決めて返す
 # @return [String] visのステータス文字列

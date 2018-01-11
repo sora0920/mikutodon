@@ -8,12 +8,10 @@ require "faye/websocket"
 require 'nokogiri'
 require_relative './model'
 require_relative "./stream"
-require_relative "./create_toot"
 require_relative "./toot_operation"
-require_relative "./create_notification"
-require_relative "./orig_parse"
 require_relative "./account_setup"
 require_relative "./user_operation"
+require_relative "./mikutodon_parser"
 
 Plugin.create(:mikutodon) do
   cw  = ""
@@ -45,7 +43,8 @@ Plugin.create(:mikutodon) do
 
     world = Plugin::Mikutodon::World.build(get_token(result[:code], result[:host]), result[:host])
 
-    label "#{world[:name]}@#{world[:host]}としてログインしますか？"
+    label "このアカウントでログインしますか？"
+    link world.user
 
     world
   end

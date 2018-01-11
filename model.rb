@@ -57,7 +57,7 @@ Plugin.create(:mikutodon) do
 
         world = new(
           id: user["id"],
-          slug: "mastodon #{user["username"]}",
+          slug: "mastodon #{user["username"]}@#{host}",
           name: user["username"],
           host: host,
           token: token
