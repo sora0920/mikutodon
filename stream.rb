@@ -39,7 +39,8 @@ def stream(host, token, tl, tl_name)
       if toot["event"] == "update"
         Plugin.call :extract_receive_message, tl_name, create_toot(toot["payload"])
       elsif toot["event"] == "notification"
-        create_notification(toot["payload"])
+        # create_notification(toot["payload"])
+        puts toot["payload"]
       else
         puts toot
       end
