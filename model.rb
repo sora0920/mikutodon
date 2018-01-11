@@ -82,7 +82,9 @@ Plugin.create(:mikutodon) do
 
       def initialize(hash)
         super(hash)
-        mikutodon_start(self.host, self.token, self.title) 
+        Thread.new{
+          mikutodon_start(self.host, self.token, self.title) 
+        }
       end
 
       def title
