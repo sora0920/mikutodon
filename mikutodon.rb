@@ -23,9 +23,9 @@ Plugin.create(:mikutodon) do
     }.select{|world|
       world.class.slug == :mikutodon
     }.each{|world|
-      ds["MikutodonHomeTimeline_#{world.title}"] = "MikutodonHomeTimeline_#{world.title}" 
-      ds["MikutodonLocalTimeline_#{world.title}"] = "MikutodonLocalTimeline_#{world.title}" 
-      ds["MikutodonPublicTimeline_#{world.title}"] = "MikutodonPublicTimeline_#{world.title}" 
+      ds["MikutodonHomeTimeline_#{world.title}"] = "MikutodonHomeTimeline(#{world.title})" 
+      ds["MikutodonLocalTimeline_#{world.title}"] = "MikutodonLocalTimeline(#{world.title})" 
+      ds["MikutodonPublicTimeline_#{world.title}"] = "MikutodonPublicTimeline(#{world.title})" 
     }
     [ds]
   end
