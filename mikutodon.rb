@@ -16,6 +16,7 @@ require_relative "./mikutodon_parser"
 Plugin.create(:mikutodon) do
   cw  = ""
   vis = "public"
+  $stream_retry = 0
 
   filter_extract_datasources do |ds|
     Enumerator.new{|y|

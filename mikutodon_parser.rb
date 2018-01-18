@@ -102,6 +102,9 @@ def create_notification(json)
 
         toot_body = body.text
       end
+
+      puts "Test"
+
       activity :mstdn_fav, "#{parse_name(data)}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
 
     when "reblog" then
