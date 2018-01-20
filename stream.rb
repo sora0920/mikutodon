@@ -56,7 +56,7 @@ def stream(host, token, tl, tl_name)
         }
         # puts toot["payload"]
       else
-        puts toot
+        # ごめんなさい
       end
     end
   end
