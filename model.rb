@@ -12,7 +12,7 @@ Plugin.create(:mikutodon) do
       field.string :idname
 
       def perma_link
-        link
+        Diva::URI(link)
       end
 
       def modified
@@ -37,7 +37,7 @@ Plugin.create(:mikutodon) do
       entity_class Retriever::Entity::URLEntity
 
       def perma_link
-        link
+        Diva::URI(link)
       end
     end
 
