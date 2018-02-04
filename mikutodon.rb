@@ -3,8 +3,6 @@ require "thread"
 require 'net/http'
 require 'uri'
 require "json"
-require "eventmachine"
-require "faye/websocket"
 require 'nokogiri'
 require_relative './model'
 require_relative "./stream"
