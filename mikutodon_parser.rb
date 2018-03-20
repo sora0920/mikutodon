@@ -1,6 +1,6 @@
 # 表示条件を満たすデータに加工
 def create_toot(status)
-  status_parse = JSON.parse(status)
+  status_parse = status
 
   created_time = status_parse["created_at"]
 
@@ -40,7 +40,6 @@ def create_toot(status)
   else
     data["account"]["display_name"]
   end
-
 
   user = Plugin::Mikutodon::User.new_ifnecessary(
     name: user_name,
@@ -103,7 +102,7 @@ def create_notification(json)
         toot_body = body.text
       end
 
-      puts "Test"
+      puts "#{toot_body}"
 
       activity :mstdn_fav, "#{parse_name(data)}さんにふぁぼられました。\n\n#{user_name}: #{toot_body}"
 

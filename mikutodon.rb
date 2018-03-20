@@ -57,7 +57,10 @@ Plugin.create(:mikutodon) do
   defspell(:favorite, :mikutodon, :mstdn_toot,
            condition: -> lambda{ true }
           ) do |mikutodon, toot |
-            mstdn_fav(toot.id, {host: mikutodon.host, token: mikutodon.token})
+            puts toot
+            puts mikutodon.host
+            puts mikutodon["host"]
+            mstdn_fav(toot[:id], {host: mikutodon.host, token: mikutodon.token})
           end
 
   defactivity "mstdn_fav", "mikutodon ふぁぼ"
