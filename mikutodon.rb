@@ -30,17 +30,56 @@ Plugin.create(:mikutodon) do
   end
 
   world_setting(:mikutodon, "Mastodon") do
-    label _("インスタンスのドメイン(例: Twitter.com)を入力しOKを押してください。")
-    input "Host", :host
+    errormsg = nil
+    applink = nil
+    token = nil
+    host = nil
+    loop{
+      label _("インスタンスのドメイン(例: Twitter.com)を入力しOKを押してください。\nVia芸がしたい場合はクライアント名を入力してください")
+      if !errormsg.empty?
+        label _("\n#{errormsg}\n")
+      end
+      input "Host", :host
+      input "クライアント名(変更したい場合のみ入力)", :c_name
 
-    result = await_input
-    label _("リンクを開きリンク先で表示された認証コードを入力しOKを押してください")
-    link create_link(result[:host])
-    input "code", :code
+      result = await_input
 
-    result = await_input
+      l = create_link(result[:host], result[:c_name])
 
-    world = Plugin::Mikutodon::World.build(get_token(result[:code], result[:host]), result[:host])
+      if l["code"] == "200"
+        applink = l["result"]
+        host = result[:host]
+        errormsg = nil
+        break
+      else
+        errormsg = "アプリの作成に失敗しました。(#{l["code"]} #{l["result"]})"
+      end
+    }
+
+
+    loop{
+      label _("リンクを開きリンク先で表示された認証コードを入力しOKを押してください")
+      link applink
+      if !errormsg.empty?
+        label _("\n#{errormsg}\n")
+      end
+
+      input "code", :code
+
+      result = await_input
+
+      t = get_token(result[:code], host)
+
+      if t["code"] == "200"
+        token = t["result"]
+        errormsg = nil
+        break
+      else
+        errormsg = "Tokenの取得に失敗しました。(#{t["code"]} #{t["result"]})"
+      end
+    }
+
+    world = Plugin::Mikutodon::World.build(token, host)
 
     label "このアカウントでログインしますか？"
     link world.user
