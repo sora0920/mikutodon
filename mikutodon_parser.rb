@@ -50,6 +50,16 @@ def create_toot(status)
     idname: data["account"]["acct"]
   )
 
+  emojis =  []
+  data["emojis"].each{ |emoji|
+    emojis.push(
+      Plugin::Mikutodon::Emoji.new_ifnecessary(
+        name: emoji["shortcode"],
+        url: emoji["url"]
+      )
+    )
+  }
+
   toot = Plugin::Mikutodon::Toot.new_ifnecessary(
     id: data["id"].to_i,
     link: data["url"],
@@ -58,7 +68,8 @@ def create_toot(status)
     created: Time.parse(created_time).localtime,
     user: user,
     favorite_count: data["favourites_count"],
-    retweet_count: data["reblogs_count"]
+    retweet_count: data["reblogs_count"],
+    emojis: emojis
   )
 
   ary = []

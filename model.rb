@@ -20,6 +20,20 @@ Plugin.create(:mikutodon) do
       end
     end
 
+    class Emoji < Retriever::Model
+      field.string :name, required: true
+      field.string :url, required: true 
+
+      def perma_link
+        Diva::URI(url)
+      end
+
+      def shortcode
+        ":#{name}:"
+      end
+    end
+
+
     class Toot < Retriever::Model
       include Retriever::Model::MessageMixin
 
@@ -33,6 +47,7 @@ Plugin.create(:mikutodon) do
       field.int    :favorite_count, required: true
       field.int    :retweet_count, required: true
       field.has    :user, User, required: true
+      field.has    :emojis, [Emoji], required: true
 
       entity_class Retriever::Entity::URLEntity
 
