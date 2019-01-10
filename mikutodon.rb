@@ -22,9 +22,9 @@ Plugin.create(:mikutodon) do
     }.select{|world|
       world.class.slug == :mikutodon
     }.each{|world|
-      ds["MikutodonHomeTimeline_#{world.title}"] = "MikutodonHomeTimeline(#{world.title})" 
-      ds["MikutodonLocalTimeline_#{world.title}"] = "MikutodonLocalTimeline(#{world.title})" 
-      ds["MikutodonPublicTimeline_#{world.title}"] = "MikutodonPublicTimeline(#{world.title})" 
+      ds["MikutodonHomeTimeline_#{world.title}"] = "MikutodonHomeTimeline(#{world.title})"
+      ds["MikutodonLocalTimeline_#{world.title}"] = "MikutodonLocalTimeline(#{world.title})"
+      ds["MikutodonPublicTimeline_#{world.title}"] = "MikutodonPublicTimeline(#{world.title})"
     }
     [ds]
   end
@@ -87,7 +87,7 @@ Plugin.create(:mikutodon) do
     world
   end
 
-  defspell(:compose, :mikutodon, 
+  defspell(:compose, :mikutodon,
            condition: -> lambda{ true }
           ) do |mikutodon, body: |
             post_toot(body, "", {host: mikutodon.host, token: mikutodon.token}, UserConfig[:mastodon_vis])
@@ -135,7 +135,7 @@ Plugin.create(:mikutodon) do
           name: "お気に入り",
           condition: lambda{ |opt|
             opt.messages.any? { |message|
-              message.is_a?(Plugin::Mikutodon::Toot) 
+              message.is_a?(Plugin::Mikutodon::Toot)
             }
           },
           visible: true,
