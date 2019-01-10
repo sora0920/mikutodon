@@ -90,7 +90,7 @@ Plugin.create(:mikutodon) do
   defspell(:compose, :mikutodon, 
            condition: -> lambda{ true }
           ) do |mikutodon, body: |
-            post_toot(body, "", {host: mikutodon.host, token: mikutodon.token}, "public")
+            post_toot(body, "", {host: mikutodon.host, token: mikutodon.token}, UserConfig[:mastodon_vis])
           end
 
   defspell(:favorite, :mikutodon, :mstdn_toot,
